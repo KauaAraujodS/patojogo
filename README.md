@@ -2,6 +2,22 @@
 
 Base do projeto em `Next.js 16 + TypeScript + Supabase`.
 
+## Estado atual
+
+Em `9 de abril de 2026`, o projeto ja tem:
+
+- autenticacao com `Supabase Auth`
+- captura de `nome`, `telefone`, `email` e `senha`
+- tabela `profiles` alinhada com o login
+- exportacao de participantes em `json` e `csv`
+- tela autenticada em formato de app
+- menu inferior com a aba `Jogar` pronta
+- abas `Extras`, `Loja`, `Ranking` e `Conta` deixadas vazias para construir do zero
+
+Resumo detalhado do handoff:
+
+- [PROJECT_STATUS.md](./PROJECT_STATUS.md)
+
 ## Stack
 
 - `Next.js 16`
