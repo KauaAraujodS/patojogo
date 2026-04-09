@@ -1,29 +1,17 @@
 import { AuthPanel } from "@/components/auth/auth-panel";
 import { SignOutButton } from "@/components/auth/sign-out-button";
+import { AppMark } from "@/components/auth/app-mark";
 import { Button } from "@/components/ui/button";
 import {
   BodyText,
   Caption,
-  DisplayTitle,
   Eyebrow,
   Lead,
+  PageTitle,
   SectionTitle,
 } from "@/components/ui/typography";
 import type { Tables } from "@/lib/database.types";
 import { createClient } from "@/lib/supabase/server";
-
-const benefits = [
-  "salvar o progresso em tempo real durante a palestra",
-  "acompanhar a pontuacao acumulada",
-  "visualizar a colocacao final no ranking",
-  "garantir identificacao para entrega de brinde",
-];
-
-const scoreRules = [
-  "cada etapa concluida aumenta o progresso",
-  "interacoes certas somam pontos para o ranking",
-  "ao final, cada participante ve sua colocacao",
-];
 
 type Profile = Pick<
   Tables<"profiles">,
@@ -32,55 +20,71 @@ type Profile = Pick<
 
 function SignedInCard({ profile }: { profile: Profile }) {
   return (
-    <div className="rounded-[var(--radius-card)] border border-panel-border bg-surface p-6 shadow-[var(--shadow-soft)]">
-      <div className="flex items-start justify-between gap-4">
-        <div className="space-y-3">
-          <Eyebrow className="inline-flex rounded-full border border-success/20 bg-success/10 px-3 py-1 text-success">
-            Sessao ativa
-          </Eyebrow>
-          <div>
-            <DisplayTitle className="text-3xl md:text-5xl">
-              Bem-vindo, {profile.full_name}.
-            </DisplayTitle>
-            <Lead className="mt-3 max-w-2xl">
-              Sua conta já está pronta para registrar progresso, pontos e
-              resultado final da palestra.
-            </Lead>
+    <div className="flex min-h-screen items-center justify-center bg-[linear-gradient(180deg,#2f469b_0%,#4b299f_46%,#6a1db3_100%)] px-4 py-7">
+      <div className="w-full max-w-[28rem] rounded-[1.9rem] border border-white/10 bg-[linear-gradient(180deg,rgba(70,46,179,0.9),rgba(80,25,148,0.95))] p-5 shadow-[0_30px_70px_rgba(18,8,56,0.35)]">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <AppMark />
+            <div>
+              <Caption className="text-[#d9e0ff]">PatoJOGO</Caption>
+              <SectionTitle className="mt-1 text-white">
+                Sessao ativa
+              </SectionTitle>
+            </div>
+          </div>
+
+          <SignOutButton />
+        </div>
+
+        <div className="mt-6 rounded-[1.5rem] bg-[#211038] p-5 text-stone-100">
+          <Eyebrow className="text-[#d9e0ff]">Participante</Eyebrow>
+          <PageTitle className="mt-2 text-3xl text-white md:text-4xl">
+            {profile.full_name}
+          </PageTitle>
+          <Lead className="mt-3 max-w-sm text-[#d0c4f0]">
+            Seu progresso está salvo e sua pontuação já pode entrar no ranking
+            final da palestra.
+          </Lead>
+
+          <div className="mt-6 grid grid-cols-2 gap-3">
+            <div className="rounded-[1rem] bg-white/8 p-4">
+              <Caption className="text-[#d9e0ff]">Etapa atual</Caption>
+              <p className="mt-2 text-2xl font-semibold text-white">
+                {profile.progress_step}
+              </p>
+            </div>
+            <div className="rounded-[1rem] bg-white/8 p-4">
+              <Caption className="text-[#d9e0ff]">Pontuacao</Caption>
+              <p className="mt-2 text-2xl font-semibold text-white">
+                {profile.score}
+              </p>
+            </div>
           </div>
         </div>
 
-        <SignOutButton />
-      </div>
+        <div className="mt-5 grid gap-3">
+          <div className="rounded-[1rem] border border-white/10 bg-[#3148d0]/30 p-4">
+            <Caption className="text-[#d9e0ff]">Email</Caption>
+            <BodyText className="mt-2 text-white">{profile.email}</BodyText>
+          </div>
+          <div className="rounded-[1rem] border border-white/10 bg-[#3148d0]/30 p-4">
+            <Caption className="text-[#d9e0ff]">Telefone</Caption>
+            <BodyText className="mt-2 text-white">{profile.phone}</BodyText>
+          </div>
+        </div>
 
-      <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <div className="rounded-[var(--radius-button)] border border-border-strong/60 bg-surface-strong p-4">
-          <Caption>Nome</Caption>
-          <BodyText className="mt-2 text-foreground">{profile.full_name}</BodyText>
-        </div>
-        <div className="rounded-[var(--radius-button)] border border-border-strong/60 bg-surface-strong p-4">
-          <Caption>Email</Caption>
-          <BodyText className="mt-2 text-foreground">{profile.email}</BodyText>
-        </div>
-        <div className="rounded-[var(--radius-button)] border border-border-strong/60 bg-surface-strong p-4">
-          <Caption>Telefone</Caption>
-          <BodyText className="mt-2 text-foreground">{profile.phone}</BodyText>
-        </div>
-        <div className="rounded-[var(--radius-button)] border border-border-strong/60 bg-surface-strong p-4">
-          <Caption>Pontuacao inicial</Caption>
-          <BodyText className="mt-2 text-foreground">{profile.score} pontos</BodyText>
-        </div>
-      </div>
-
-      <div className="mt-6 rounded-[var(--radius-card)] border border-panel-border bg-[#201912] p-5 text-stone-100">
-        <Caption className="text-stone-300">Estado atual do participante</Caption>
-        <div className="mt-3 grid gap-4 md:grid-cols-2">
-          <BodyText className="text-stone-200">
-            Progresso salvo: etapa {profile.progress_step}
+        <div className="mt-5 rounded-[1.5rem] border border-white/10 bg-[#4a23a0]/50 p-5">
+          <Caption className="text-[#d9e0ff]">Proxima acao</Caption>
+          <BodyText className="mt-2 text-[#f2ebff]">
+            Entre na próxima etapa da palestra e continue acumulando pontos para
+            disputar o brinde.
           </BodyText>
-          <BodyText className="text-stone-200">
-            Ranking: pronto para ser calculado conforme as interacoes da
-            palestra
-          </BodyText>
+          <Button
+            className="mt-4 w-full border-[#ff9d0a] bg-[linear-gradient(90deg,#ffc312,#ff7c0f)] text-[#201208] hover:border-[#ff9d0a] hover:bg-[linear-gradient(90deg,#ffc312,#ff7c0f)]"
+            size="lg"
+          >
+            Continuar no jogo
+          </Button>
         </div>
       </div>
     </div>
@@ -106,90 +110,6 @@ export default async function Home() {
   }
 
   return (
-    <main className="app-shell">
-      <div className="app-container flex flex-col gap-6">
-        {!profile ? (
-          <>
-            <section className="overflow-hidden rounded-[var(--radius-hero)] border border-panel-border bg-surface shadow-[var(--shadow-card)] backdrop-blur">
-              <div className="grid gap-10 px-7 py-8 md:grid-cols-[1.2fr_0.8fr] md:px-10 md:py-10">
-                <div className="space-y-5">
-                  <Eyebrow className="inline-flex rounded-full border border-accent/20 bg-accent/10 px-3 py-1">
-                    Entrada da palestra
-                  </Eyebrow>
-                  <div className="space-y-3">
-                    <DisplayTitle className="max-w-3xl">
-                      Cadastro e login para participar, salvar progresso e
-                      disputar o ranking final.
-                    </DisplayTitle>
-                    <Lead className="max-w-2xl">
-                      Este app funciona como a experiencia paralela da palestra.
-                      Cada participante entra com conta propria para registrar
-                      avanco, pontos e competir pelo brinde no encerramento.
-                    </Lead>
-                  </div>
-                  <div className="flex flex-wrap gap-3">
-                    <Button size="lg">Entrar na palestra</Button>
-                    <Button size="lg" variant="secondary">
-                      Ver como funciona
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="rounded-[var(--radius-card)] border border-panel-border bg-surface-strong p-5 shadow-[var(--shadow-soft)]">
-                  <SectionTitle>O que a conta libera</SectionTitle>
-                  <ul className="mt-5 space-y-3">
-                    {benefits.map((item) => (
-                      <li
-                        key={item}
-                        className="rounded-[var(--radius-button)] border border-border-strong/60 px-4 py-3"
-                      >
-                        <BodyText>{item}</BodyText>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </section>
-
-            <section className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-              <article className="rounded-[var(--radius-card)] border border-panel-border bg-surface p-7 shadow-[var(--shadow-soft)] backdrop-blur">
-                <SectionTitle>Como o ranking funciona</SectionTitle>
-                <ol className="mt-5 space-y-3">
-                  {scoreRules.map((rule, index) => (
-                    <li
-                      key={rule}
-                      className="rounded-[var(--radius-button)] border border-border-strong/60 px-4 py-3"
-                    >
-                      <BodyText>
-                        {index + 1}. {rule}
-                      </BodyText>
-                    </li>
-                  ))}
-                </ol>
-
-                <div className="mt-6 rounded-[var(--radius-card)] border border-panel-border bg-[#201912] p-5 text-stone-100">
-                  <Caption className="text-stone-300">Dados captados</Caption>
-                  <div className="mt-3 space-y-2">
-                    <BodyText className="text-stone-200">
-                      Nome para identificar o participante
-                    </BodyText>
-                    <BodyText className="text-stone-200">
-                      Email para autenticacao e retomada do acesso
-                    </BodyText>
-                    <BodyText className="text-stone-200">
-                      Telefone para contato e validacao do brinde
-                    </BodyText>
-                  </div>
-                </div>
-              </article>
-
-              <AuthPanel />
-            </section>
-          </>
-        ) : (
-          <SignedInCard profile={profile} />
-        )}
-      </div>
-    </main>
+    <main>{!profile ? <AuthPanel /> : <SignedInCard profile={profile} />}</main>
   );
 }

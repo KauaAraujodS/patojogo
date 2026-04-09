@@ -44,11 +44,12 @@
 
 html {
   background:
-    radial-gradient(circle at top, rgba(215, 166, 118, 0.28), transparent 30%),
-    linear-gradient(180deg, #f8f3eb 0%, #efe4d8 100%);
+    radial-gradient(circle at top, rgba(215, 166, 118, 0.2), transparent 28%),
+    linear-gradient(180deg, #f7f1e8 0%, #ede2d5 100%);
 }
 
 body {
+  min-height: 100vh;
   color: var(--foreground);
   font-family: var(--font-geist-sans), sans-serif;
 }
@@ -71,11 +72,31 @@ a {
 
 .app-shell {
   min-height: 100vh;
-  padding: 2.5rem 1.5rem;
+  padding: 1.5rem;
 }
 
 .app-container {
   margin: 0 auto;
   width: 100%;
   max-width: 72rem;
+}
+
+.app-mobile-shell {
+  width: 100%;
+  max-width: 27rem;
+  border-radius: 2rem;
+  border: 1px solid rgba(35, 27, 19, 0.08);
+  background: rgba(255, 255, 255, 0.58);
+  padding: 0.75rem;
+  box-shadow: 0 30px 80px rgba(57, 37, 18, 0.12);
+  backdrop-filter: blur(18px);
+}
+
+.app-mobile-screen {
+  border-radius: 1.65rem;
+  border: 1px solid rgba(35, 27, 19, 0.08);
+  background:
+    radial-gradient(circle at top, rgba(255, 244, 232, 0.9), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 241, 232, 0.96));
+  min-height: min(52rem, calc(100svh - 3rem));
 }

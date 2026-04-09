@@ -15,16 +15,28 @@ export function Input({ className, ...props }: InputProps) {
 
 type FieldProps = {
   children: React.ReactNode;
+  className?: string;
+  hintClassName?: string;
   hint?: string;
   label: string;
+  labelClassName?: string;
 };
 
-export function Field({ children, hint, label }: FieldProps) {
+export function Field({
+  children,
+  className,
+  hint,
+  hintClassName,
+  label,
+  labelClassName,
+}: FieldProps) {
   return (
-    <label className="flex flex-col gap-2">
-      <span className={designSystem.input.label}>{label}</span>
+    <label className={cn("flex flex-col gap-2", className)}>
+      <span className={cn(designSystem.input.label, labelClassName)}>{label}</span>
       {children}
-      {hint ? <span className={designSystem.input.hint}>{hint}</span> : null}
+      {hint ? (
+        <span className={cn(designSystem.input.hint, hintClassName)}>{hint}</span>
+      ) : null}
     </label>
   );
 }
