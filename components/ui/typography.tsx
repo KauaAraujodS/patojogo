@@ -24,12 +24,14 @@ export function Eyebrow({
   );
 }
 
-export function DisplayTitle({
-  as: Component = "h1",
+export function DisplayTitle<T extends ElementType = "h1">({
+  as,
   children,
   className,
   ...props
-}: TextProps<"h1">) {
+}: TextProps<T>) {
+  const Component = as ?? "h1";
+
   return (
     <Component
       className={cn(designSystem.typography.display, className)}
@@ -40,12 +42,14 @@ export function DisplayTitle({
   );
 }
 
-export function PageTitle({
-  as: Component = "h2",
+export function PageTitle<T extends ElementType = "h2">({
+  as,
   children,
   className,
   ...props
-}: TextProps<"h2">) {
+}: TextProps<T>) {
+  const Component = as ?? "h2";
+
   return (
     <Component
       className={cn(designSystem.typography.pageTitle, className)}
@@ -56,12 +60,14 @@ export function PageTitle({
   );
 }
 
-export function SectionTitle({
-  as: Component = "p",
+export function SectionTitle<T extends ElementType = "p">({
+  as,
   children,
   className,
   ...props
-}: TextProps<"p">) {
+}: TextProps<T>) {
+  const Component = as ?? "p";
+
   return (
     <Component
       className={cn(designSystem.typography.sectionTitle, className)}
@@ -72,12 +78,14 @@ export function SectionTitle({
   );
 }
 
-export function Lead({
-  as: Component = "p",
+export function Lead<T extends ElementType = "p">({
+  as,
   children,
   className,
   ...props
-}: TextProps<"p">) {
+}: TextProps<T>) {
+  const Component = as ?? "p";
+
   return (
     <Component
       className={cn(designSystem.typography.lead, className)}
@@ -88,12 +96,14 @@ export function Lead({
   );
 }
 
-export function BodyText({
-  as: Component = "p",
+export function BodyText<T extends ElementType = "p">({
+  as,
   children,
   className,
   ...props
-}: TextProps<"p">) {
+}: TextProps<T>) {
+  const Component = as ?? "p";
+
   return (
     <Component
       className={cn(designSystem.typography.body, className)}
@@ -104,12 +114,14 @@ export function BodyText({
   );
 }
 
-export function Caption({
-  as: Component = "p",
+export function Caption<T extends ElementType = "p">({
+  as,
   children,
   className,
   ...props
-}: TextProps<"p">) {
+}: TextProps<T>) {
+  const Component = as ?? "p";
+
   return (
     <Component
       className={cn(designSystem.typography.caption, className)}

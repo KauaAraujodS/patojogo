@@ -47,6 +47,11 @@ export const designSystem = {
       lg: "min-h-12 px-5 py-3.5 text-base",
     },
   },
+  input: {
+    base: "flex min-h-12 w-full rounded-[1rem] border border-border-strong/70 bg-surface-strong px-4 py-3 text-sm text-foreground outline-none transition-colors duration-200 placeholder:text-muted focus:border-accent focus:ring-2 focus:ring-accent/20",
+    label: "text-sm font-semibold text-foreground",
+    hint: "text-xs leading-6 text-muted",
+  },
 } as const;
 
 export type ButtonVariant = keyof typeof designSystem.button.variants;
