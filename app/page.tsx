@@ -1,3 +1,12 @@
+import { Button } from "@/components/ui/button";
+import {
+  BodyText,
+  Caption,
+  DisplayTitle,
+  Eyebrow,
+  Lead,
+  SectionTitle,
+} from "@/components/ui/typography";
 import { hasSupabaseEnv } from "@/lib/env";
 
 const nextSteps = [
@@ -20,8 +29,8 @@ function StatusBadge({ ready }: { ready: boolean }) {
       className={[
         "inline-flex rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em]",
         ready
-          ? "border-emerald-700/15 bg-emerald-600/10 text-emerald-700"
-          : "border-amber-700/15 bg-amber-500/10 text-amber-800",
+          ? "border-success/15 bg-success/10 text-success"
+          : "border-warning/15 bg-warning/10 text-warning",
       ].join(" ")}
     >
       {ready ? "Conectado" : "Pendente"}
@@ -34,40 +43,44 @@ export default function Home() {
   const supabaseReady = hasSupabaseEnv();
 
   return (
-    <main className="min-h-screen px-6 py-10 md:px-10">
-      <div className="mx-auto flex max-w-6xl flex-col gap-6">
-        <section className="overflow-hidden rounded-[2rem] border border-panel-border bg-panel shadow-[0_30px_80px_rgba(85,56,22,0.08)] backdrop-blur">
+    <main className="app-shell">
+      <div className="app-container flex flex-col gap-6">
+        <section className="overflow-hidden rounded-[var(--radius-hero)] border border-panel-border bg-surface shadow-[var(--shadow-card)] backdrop-blur">
           <div className="grid gap-10 px-7 py-8 md:grid-cols-[1.3fr_0.7fr] md:px-10 md:py-10">
             <div className="space-y-5">
-              <span className="inline-flex rounded-full border border-accent/20 bg-accent/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-accent-strong">
+              <Eyebrow className="inline-flex rounded-full border border-accent/20 bg-accent/10 px-3 py-1">
                 Base criada
-              </span>
+              </Eyebrow>
               <div className="space-y-3">
-                <h1 className="max-w-3xl text-4xl font-semibold tracking-tight md:text-6xl">
+                <DisplayTitle className="max-w-3xl">
                   {appName} com Next.js e Supabase prontos para crescer.
-                </h1>
-                <p className="max-w-2xl text-base leading-7 text-muted md:text-lg">
+                </DisplayTitle>
+                <Lead className="max-w-2xl">
                   O repositório já está conectado ao GitHub, o projeto do
                   Supabase já está vinculado localmente e o app já conhece as
                   credenciais públicas para começar a desenvolver.
-                </p>
+                </Lead>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                <Button size="lg">Criar primeira feature</Button>
+                <Button size="lg" variant="secondary">
+                  Abrir documentação do padrão
+                </Button>
               </div>
             </div>
 
-            <div className="rounded-[1.5rem] border border-panel-border bg-white/70 p-5">
-              <p className="text-sm font-semibold uppercase tracking-[0.28em] text-muted">
-                Status atual
-              </p>
+            <div className="rounded-[var(--radius-card)] border border-panel-border bg-surface-strong p-5 shadow-[var(--shadow-soft)]">
+              <SectionTitle>Status atual</SectionTitle>
               <div className="mt-5 space-y-4">
-                <div className="flex items-center justify-between gap-3 rounded-2xl border border-black/6 bg-black/[0.025] px-4 py-3">
+                <div className="flex items-center justify-between gap-3 rounded-[var(--radius-button)] border border-border-strong/60 bg-black/[0.025] px-4 py-3">
                   <span className="font-medium">GitHub remoto</span>
                   <StatusBadge ready />
                 </div>
-                <div className="flex items-center justify-between gap-3 rounded-2xl border border-black/6 bg-black/[0.025] px-4 py-3">
+                <div className="flex items-center justify-between gap-3 rounded-[var(--radius-button)] border border-border-strong/60 bg-black/[0.025] px-4 py-3">
                   <span className="font-medium">Supabase</span>
                   <StatusBadge ready={supabaseReady} />
                 </div>
-                <div className="flex items-center justify-between gap-3 rounded-2xl border border-black/6 bg-black/[0.025] px-4 py-3">
+                <div className="flex items-center justify-between gap-3 rounded-[var(--radius-button)] border border-border-strong/60 bg-black/[0.025] px-4 py-3">
                   <span className="font-medium">App Router</span>
                   <StatusBadge ready />
                 </div>
@@ -77,35 +90,44 @@ export default function Home() {
         </section>
 
         <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-          <article className="rounded-[1.75rem] border border-panel-border bg-panel p-7 backdrop-blur">
-            <p className="text-sm font-semibold uppercase tracking-[0.28em] text-muted">
-              Stack
-            </p>
-            <ul className="mt-5 space-y-3 text-sm leading-7 text-muted md:text-base">
+          <article className="rounded-[var(--radius-card)] border border-panel-border bg-surface p-7 shadow-[var(--shadow-soft)] backdrop-blur">
+            <SectionTitle>Stack</SectionTitle>
+            <ul className="mt-5 space-y-3">
               {stack.map((item) => (
-                <li key={item} className="rounded-2xl border border-black/6 px-4 py-3">
-                  {item}
+                <li
+                  key={item}
+                  className="rounded-[var(--radius-button)] border border-border-strong/60 px-4 py-3"
+                >
+                  <BodyText>{item}</BodyText>
                 </li>
               ))}
             </ul>
           </article>
 
-          <article className="rounded-[1.75rem] border border-panel-border bg-panel p-7 backdrop-blur">
-            <p className="text-sm font-semibold uppercase tracking-[0.28em] text-muted">
-              Proximos passos
-            </p>
-            <ol className="mt-5 space-y-3 text-sm leading-7 text-muted md:text-base">
+          <article className="rounded-[var(--radius-card)] border border-panel-border bg-surface p-7 shadow-[var(--shadow-soft)] backdrop-blur">
+            <SectionTitle>Próximos passos</SectionTitle>
+            <ol className="mt-5 space-y-3">
               {nextSteps.map((step, index) => (
-                <li key={step} className="rounded-2xl border border-black/6 px-4 py-3">
-                  {index + 1}. {step}
+                <li
+                  key={step}
+                  className="rounded-[var(--radius-button)] border border-border-strong/60 px-4 py-3"
+                >
+                  <BodyText>
+                    {index + 1}. {step}
+                  </BodyText>
                 </li>
               ))}
             </ol>
 
-            <div className="mt-6 rounded-[1.5rem] border border-panel-border bg-[#201912] p-5 text-sm text-stone-100">
-              <p className="mb-3 font-semibold text-stone-50">Check rapido</p>
+            <div className="mt-6 rounded-[var(--radius-card)] border border-panel-border bg-[#201912] p-5 text-stone-100">
+              <Caption className="mb-3 text-stone-300">Check rápido</Caption>
               <pre className="overflow-x-auto whitespace-pre-wrap font-mono leading-7">
-                {["npm run dev", "npm run lint", "npm run typecheck", "npm run build"].join("\n")}
+                {[
+                  "npm run dev",
+                  "npm run lint",
+                  "npm run typecheck",
+                  "npm run build",
+                ].join("\n")}
               </pre>
             </div>
           </article>
