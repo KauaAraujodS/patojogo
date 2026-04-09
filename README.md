@@ -35,6 +35,14 @@ NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
 ```
 
+Para subir localmente:
+
+```bash
+Copy-Item .env.example .env.local
+npm install
+npm run dev
+```
+
 ## Supabase
 
 Projeto remoto vinculado:
