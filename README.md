@@ -33,6 +33,7 @@ NEXT_PUBLIC_APP_NAME=
 NEXT_PUBLIC_APP_URL=
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
 ```
 
 Para subir localmente:
@@ -42,6 +43,22 @@ Copy-Item .env.example .env.local
 npm install
 npm run dev
 ```
+
+## Exportar participantes
+
+Para gerar um pacote com todos os cadastros:
+
+```bash
+npm run export:participants
+```
+
+O comando gera:
+
+- `exports/participants/<timestamp>/participants.json`
+- `exports/participants/<timestamp>/participants.csv`
+- `exports/participants/<timestamp>/people/*.json`
+
+Cada participante recebe um arquivo proprio com os dados individuais.
 
 ## Supabase
 
