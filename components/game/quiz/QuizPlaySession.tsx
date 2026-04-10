@@ -67,6 +67,11 @@ export function QuizPlaySession({
 
   const currentQuestion = questions[currentIndex];
   const remainingSkips = MAX_SKIPS - skipCount;
+  const shouldConfirmExit =
+    answers.length > 0 ||
+    feedback !== null ||
+    revealedHints.length > 0 ||
+    skipCount > 0;
 
   useEffect(() => {
     if (questionStartedAtRef.current === 0) {
@@ -270,6 +275,19 @@ export function QuizPlaySession({
     });
   }
 
+  function handleExitQuiz() {
+    if (
+      shouldConfirmExit &&
+      !window.confirm(
+        "Se voltar agora, a rodada atual sera perdida. Deseja sair do quiz?",
+      )
+    ) {
+      return;
+    }
+
+    router.push(`/jogar/quiz-guiado/${getQuizLevelSlug(level)}`);
+  }
+
   if (!currentQuestion) {
     return null;
   }
@@ -294,8 +312,17 @@ export function QuizPlaySession({
                 Questao {currentIndex + 1} de {questions.length}
               </p>
             </div>
-            <div className="rounded-full border border-white/10 bg-white/8 px-4 py-2 text-sm text-white/82">
-              {isFinishing ? "Fechando rodada..." : "Tudo salvo nessa sessao"}
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                className="rounded-full border border-white/10 bg-white/8 px-4 py-2 text-sm font-medium text-white/88 transition-colors hover:bg-white/12"
+                onClick={handleExitQuiz}
+                type="button"
+              >
+                Voltar
+              </button>
+              <div className="rounded-full border border-white/10 bg-white/8 px-4 py-2 text-sm text-white/82">
+                {isFinishing ? "Fechando rodada..." : "Tudo salvo nessa sessao"}
+              </div>
             </div>
           </div>
         </div>

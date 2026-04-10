@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { motion } from "motion/react";
 import {
@@ -10,6 +11,7 @@ import { cn } from "@/lib/cn";
 
 type QuizReviewProps = {
   attempt: QuizAttemptRecord;
+  backHref: string;
   defaultFilter?: QuizReviewFilter;
 };
 
@@ -17,6 +19,7 @@ const filters: QuizReviewFilter[] = ["all", "correct", "incorrect", "skipped"];
 
 export function QuizReview({
   attempt,
+  backHref,
   defaultFilter = "all",
 }: QuizReviewProps) {
   const [activeFilter, setActiveFilter] = useState<QuizReviewFilter>(defaultFilter);
@@ -50,8 +53,16 @@ export function QuizReview({
               Revise cada resposta
             </h1>
           </div>
-          <div className="rounded-full border border-white/10 bg-white/8 px-4 py-2 text-sm text-white/82">
-            {attempt.reviewItems.length} itens
+          <div className="flex flex-wrap items-center gap-2">
+            <Link
+              className="inline-flex min-h-10 items-center justify-center rounded-full border border-white/10 bg-white/8 px-4 text-sm font-medium text-white/88 transition-colors hover:bg-white/12"
+              href={backHref}
+            >
+              Voltar
+            </Link>
+            <div className="rounded-full border border-white/10 bg-white/8 px-4 py-2 text-sm text-white/82">
+              {attempt.reviewItems.length} itens
+            </div>
           </div>
         </div>
 

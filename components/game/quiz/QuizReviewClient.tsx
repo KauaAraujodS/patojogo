@@ -12,6 +12,7 @@ import { getStoredQuizAttemptById } from "@/lib/quiz/client";
 
 type QuizReviewClientProps = {
   attemptId?: string;
+  backHref: string;
   defaultFilter?: QuizReviewFilter;
   initialAttempt: QuizAttemptRecord | null;
   initialProgress: QuizProgressSnapshot;
@@ -21,6 +22,7 @@ type QuizReviewClientProps = {
 
 export function QuizReviewClient({
   attemptId,
+  backHref,
   defaultFilter,
   initialAttempt,
   initialProgress,
@@ -44,5 +46,11 @@ export function QuizReviewClient({
     );
   }
 
-  return <QuizReview attempt={attempt} defaultFilter={defaultFilter} />;
+  return (
+    <QuizReview
+      attempt={attempt}
+      backHref={backHref}
+      defaultFilter={defaultFilter}
+    />
+  );
 }

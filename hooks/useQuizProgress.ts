@@ -7,6 +7,7 @@ import type {
 } from "@/data/questions";
 import { flushQueuedQuizSync } from "@/lib/quiz/client";
 import {
+  buildEmptyLevelProgress,
   buildDefaultQuizProgress,
   getQuizStars,
   isQuizLevelUnlocked,
@@ -27,6 +28,59 @@ function getProgressWeight(progress: QuizProgressSnapshot) {
       levelProgress.totalCoins,
     0,
   );
+}
+
+function normalizeProgressSnapshot(
+  initialProgress: QuizProgressSnapshot,
+  value: unknown,
+) {
+  const base = buildDefaultQuizProgress(initialProgress.userId);
+
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return initialProgress;
+  }
+
+  const candidate = value as Partial<QuizProgressSnapshot>;
+  const candidateLevelProgress =
+    candidate.levelProgress &&
+    typeof candidate.levelProgress === "object" &&
+    !Array.isArray(candidate.levelProgress)
+      ? (candidate.levelProgress as Partial<QuizProgressSnapshot["levelProgress"]>)
+      : ({} as Partial<QuizProgressSnapshot["levelProgress"]>);
+
+  return {
+    ...base,
+    ...initialProgress,
+    achievements: Array.isArray(candidate.achievements)
+      ? candidate.achievements
+      : initialProgress.achievements,
+    levelProgress: {
+      beginner: {
+        ...buildEmptyLevelProgress("beginner"),
+        ...initialProgress.levelProgress.beginner,
+        ...candidateLevelProgress.beginner,
+      },
+      intermediate: {
+        ...buildEmptyLevelProgress("intermediate"),
+        ...initialProgress.levelProgress.intermediate,
+        ...candidateLevelProgress.intermediate,
+      },
+      advanced: {
+        ...buildEmptyLevelProgress("advanced"),
+        ...initialProgress.levelProgress.advanced,
+        ...candidateLevelProgress.advanced,
+      },
+    },
+    unlockedLevels: Array.isArray(candidate.unlockedLevels)
+      ? candidate.unlockedLevels.filter(
+          (level): level is QuizLevel =>
+            level === "beginner" ||
+            level === "intermediate" ||
+            level === "advanced",
+        )
+      : initialProgress.unlockedLevels,
+    userId: initialProgress.userId,
+  } satisfies QuizProgressSnapshot;
 }
 
 function getPreferredProgress(
@@ -57,7 +111,10 @@ export function useQuizProgress(initialProgress: QuizProgressSnapshot) {
     }
 
     try {
-      const parsed = JSON.parse(rawValue) as QuizProgressSnapshot;
+      const parsed = normalizeProgressSnapshot(
+        initialProgress,
+        JSON.parse(rawValue),
+      );
 
       return getPreferredProgress(initialProgress, parsed);
     } catch {
@@ -74,7 +131,7 @@ export function useQuizProgress(initialProgress: QuizProgressSnapshot) {
       try {
         nextProgress = getPreferredProgress(
           initialProgress,
-          JSON.parse(rawValue) as QuizProgressSnapshot,
+          normalizeProgressSnapshot(initialProgress, JSON.parse(rawValue)),
         );
       } catch {
         nextProgress = initialProgress;
