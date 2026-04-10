@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { AppMark } from "@/components/auth/app-mark";
 import { SignOutButton } from "@/components/auth/sign-out-button";
@@ -56,6 +57,7 @@ const playModes = [
     accent: "from-[#2c7dff] via-[#1e54ff] to-[#1832ca]",
     description:
       "Siga a trilha principal da palestra e avance com perguntas mais guiadas.",
+    href: "/jogar/quiz-guiado",
     icon: <StackIcon />,
     iconSurface: "bg-[linear-gradient(180deg,#7ad1ff,#3f7dff)]",
     title: "Quiz guiado",
@@ -169,36 +171,15 @@ function PlayHub({ progressStep }: { progressStep: number }) {
 
       <div className="space-y-3.5 sm:space-y-4">
         {playModes.map((mode) => (
-          <button
+          <PlayModeCard
+            accent={mode.accent}
+            description={mode.description}
+            href={mode.href}
             key={mode.title}
-            className={cn(
-              "grid w-full grid-cols-[auto,1fr,auto] items-center gap-3 rounded-[1.55rem] border border-white/18 bg-[linear-gradient(135deg,rgba(255,255,255,0.09),rgba(255,255,255,0.02))] px-4 py-4 text-left shadow-[0_24px_50px_rgba(10,14,45,0.2)] backdrop-blur sm:gap-4 sm:rounded-[1.85rem] sm:px-5 sm:py-5",
-              `bg-gradient-to-r ${mode.accent}`,
-            )}
-            type="button"
-          >
-            <div
-              className={cn(
-                "flex h-14 w-14 shrink-0 items-center justify-center rounded-[1rem] shadow-[inset_0_1px_0_rgba(255,255,255,0.24)] sm:h-16 sm:w-16 sm:rounded-[1.2rem]",
-                mode.iconSurface,
-              )}
-            >
-              {mode.icon}
-            </div>
-
-            <div className="min-w-0 flex-1">
-              <h2 className="text-[1.35rem] font-semibold tracking-tight text-white sm:text-[1.55rem]">
-                {mode.title}
-              </h2>
-              <p className="mt-1 text-[0.92rem] leading-6 text-white/84 sm:text-sm">
-                {mode.description}
-              </p>
-            </div>
-
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-black/12 text-white sm:h-11 sm:w-11">
-              <ArrowIcon />
-            </div>
-          </button>
+            icon={mode.icon}
+            iconSurface={mode.iconSurface}
+            title={mode.title}
+          />
         ))}
       </div>
 
@@ -207,6 +188,70 @@ function PlayHub({ progressStep }: { progressStep: number }) {
         {" "}salva. Toda resposta boa sobe sua pontuacao no ranking final.
       </div>
     </section>
+  );
+}
+
+type PlayModeCardProps = {
+  accent: string;
+  description: string;
+  href?: string;
+  icon: React.ReactNode;
+  iconSurface: string;
+  title: string;
+};
+
+function PlayModeCard({
+  accent,
+  description,
+  href,
+  icon,
+  iconSurface,
+  title,
+}: PlayModeCardProps) {
+  const className = cn(
+    "grid w-full grid-cols-[auto,1fr,auto] items-center gap-3 rounded-[1.55rem] border border-white/18 bg-[linear-gradient(135deg,rgba(255,255,255,0.09),rgba(255,255,255,0.02))] px-4 py-4 text-left shadow-[0_24px_50px_rgba(10,14,45,0.2)] backdrop-blur transition-transform duration-200 sm:gap-4 sm:rounded-[1.85rem] sm:px-5 sm:py-5",
+    "hover:-translate-y-0.5",
+    `bg-gradient-to-r ${accent}`,
+  );
+
+  const content = (
+    <>
+      <div
+        className={cn(
+          "flex h-14 w-14 shrink-0 items-center justify-center rounded-[1rem] shadow-[inset_0_1px_0_rgba(255,255,255,0.24)] sm:h-16 sm:w-16 sm:rounded-[1.2rem]",
+          iconSurface,
+        )}
+      >
+        {icon}
+      </div>
+
+      <div className="min-w-0 flex-1">
+        <h2 className="text-[1.35rem] font-semibold tracking-tight text-white sm:text-[1.55rem]">
+          {title}
+        </h2>
+        <p className="mt-1 text-[0.92rem] leading-6 text-white/84 sm:text-sm">
+          {description}
+        </p>
+      </div>
+
+      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-black/12 text-white sm:h-11 sm:w-11">
+        <ArrowIcon />
+      </div>
+    </>
+  );
+
+  if (href) {
+    return (
+      <Link className={className} href={href}>
+        {content}
+      </Link>
+    );
+  }
+
+  return (
+    <button className={className} type="button">
+      {content}
+    </button>
   );
 }
 
