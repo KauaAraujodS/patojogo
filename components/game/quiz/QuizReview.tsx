@@ -8,6 +8,7 @@ import {
   type QuizReviewFilter,
 } from "@/data/questions";
 import { cn } from "@/lib/cn";
+import { getQuizQuestionTypeLabel } from "@/utils/quizHelpers";
 
 type QuizReviewProps = {
   attempt: QuizAttemptRecord;
@@ -110,20 +111,31 @@ export function QuizReview({
                       : item.isCorrect
                         ? "✅ Correta"
                         : "❌ Incorreta"}{" "}
-                    • {item.type}
+                    • {getQuizQuestionTypeLabel(item.type)}
                   </p>
                   <p className="mt-2 text-sm text-[#e7ecff]">{item.questionText}</p>
-                  <p className="mt-3 text-sm text-[#ffd778]">
-                    Sua resposta: {item.selectedAnswerLabel}
-                  </p>
-                  {item.correctAnswerLabel ? (
-                    <p className="mt-2 text-sm text-[#bcd0ff]">
-                      Resposta correta: {item.correctAnswerLabel}
+                  <div className="mt-4 grid gap-3 lg:grid-cols-[1fr,1fr]">
+                    <ReviewLine
+                      highlight={item.isCorrect ? "success" : "default"}
+                      label="Sua resposta"
+                      value={item.selectedAnswerLabel}
+                    />
+                    {item.correctAnswerLabel ? (
+                      <ReviewLine
+                        highlight={!item.isCorrect || isSkipped ? "success" : "default"}
+                        label={isSkipped ? "Resposta esperada" : "Resposta correta"}
+                        value={item.correctAnswerLabel}
+                      />
+                    ) : null}
+                  </div>
+                  <div className="mt-3 rounded-[1rem] border border-white/8 bg-white/[0.03] p-3">
+                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-[#9fb5ff]">
+                      {item.isCorrect ? "Por que estava certa" : "Por que a correta era essa"}
                     </p>
-                  ) : null}
-                  <p className="mt-3 text-sm leading-7 text-[#c8d5ff]">
-                    {item.explanation}
-                  </p>
+                    <p className="mt-2 text-sm leading-7 text-[#c8d5ff]">
+                      {item.explanation}
+                    </p>
+                  </div>
                 </motion.div>
               );
             })
@@ -131,6 +143,34 @@ export function QuizReview({
         </div>
       </div>
     </section>
+  );
+}
+
+function ReviewLine({
+  highlight = "default",
+  label,
+  value,
+}: {
+  highlight?: "default" | "success";
+  label: string;
+  value: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "rounded-[1rem] border p-3",
+        highlight === "success"
+          ? "border-[#28d777]/28 bg-[#143f39]/40"
+          : "border-white/8 bg-white/[0.03]",
+      )}
+    >
+      <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-[#9fb5ff]">
+        {label}
+      </p>
+      <p className="mt-2 whitespace-pre-line text-sm leading-7 text-[#ecf0ff]">
+        {value}
+      </p>
+    </div>
   );
 }
 

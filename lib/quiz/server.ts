@@ -9,7 +9,6 @@ import {
   buildDefaultQuizProgress,
   buildQuizReviewItems,
   getQuizLevelQuestions,
-  stringifyQuizAnswer,
 } from "@/utils/quizHelpers";
 
 type ServerClient = SupabaseClient<Database>;
@@ -126,9 +125,7 @@ export function normalizeQuizAttemptRow(
         } & QuizAttemptRecord["summary"])
       : null;
   const reviewItems =
-    summaryPayload?.reviewItems && Array.isArray(summaryPayload.reviewItems)
-      ? summaryPayload.reviewItems
-      : buildQuizReviewItems(levelQuestions, answers);
+    buildQuizReviewItems(levelQuestions, answers);
 
   return {
     achievements: summaryPayload?.achievements ?? [],
@@ -136,12 +133,7 @@ export function normalizeQuizAttemptRow(
     completedAt: row.completed_at,
     id: row.id,
     level: row.level as QuizAttemptRecord["level"],
-    reviewItems: reviewItems.map((item) => ({
-      ...item,
-      selectedAnswerLabel: item.selectedAnswerLabel
-        ? item.selectedAnswerLabel
-        : stringifyQuizAnswer(null),
-    })),
+    reviewItems,
     startedAt: row.started_at,
     status: row.status as QuizAttemptRecord["status"],
     summary:

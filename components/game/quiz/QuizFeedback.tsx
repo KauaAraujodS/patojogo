@@ -58,7 +58,7 @@ export function QuizFeedback({
       <div className="mt-4 grid gap-4 lg:grid-cols-[1fr,0.85fr]">
         <div className="rounded-[1.2rem] border border-white/10 bg-white/[0.04] p-4">
           <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-[#9fb5ff]">
-            Explicacao
+            {feedback.isCorrect ? "Por que estava certa" : "Por que a correta era essa"}
           </p>
           <p className="mt-3 text-sm leading-7 text-[#e8edff]">
             {feedback.question.explanation}
@@ -66,10 +66,19 @@ export function QuizFeedback({
         </div>
 
         <div className="space-y-3 rounded-[1.2rem] border border-white/10 bg-white/[0.04] p-4">
-          <FeedbackLine label="Sua resposta" value={feedback.selectedAnswerLabel} />
+          <FeedbackLine
+            highlight={feedback.isCorrect ? "success" : "default"}
+            label="Sua resposta"
+            value={feedback.selectedAnswerLabel}
+          />
           {feedback.correctAnswerLabel ? (
             <FeedbackLine
-              label="Resposta correta"
+              highlight={feedback.isCorrect ? "default" : "success"}
+              label={
+                feedback.mode === "skipped"
+                  ? "Resposta esperada"
+                  : "Resposta correta"
+              }
               value={feedback.correctAnswerLabel}
             />
           ) : null}
@@ -101,13 +110,30 @@ export function QuizFeedback({
   );
 }
 
-function FeedbackLine({ label, value }: { label: string; value: string }) {
+function FeedbackLine({
+  highlight = "default",
+  label,
+  value,
+}: {
+  highlight?: "default" | "success";
+  label: string;
+  value: string;
+}) {
   return (
-    <div>
+    <div
+      className={cn(
+        "rounded-[1rem] border p-3",
+        highlight === "success"
+          ? "border-[#28d777]/28 bg-[#143f39]/40"
+          : "border-white/8 bg-white/[0.03]",
+      )}
+    >
       <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-[#9fb5ff]">
         {label}
       </p>
-      <p className="mt-2 text-sm text-[#ecf0ff]">{value}</p>
+      <p className="mt-2 whitespace-pre-line text-sm leading-7 text-[#ecf0ff]">
+        {value}
+      </p>
     </div>
   );
 }

@@ -24,6 +24,7 @@ import {
   buildQuizAchievements,
   calculateQuestionRewards,
   evaluateQuizAnswer,
+  formatQuizAnswerForQuestion,
   getCanonicalCorrectAnswer,
   getHintCost,
   getQuizLevelQuestions,
@@ -151,7 +152,10 @@ export function QuizPlaySession({
     setSkipCount((currentCount) => currentCount + 1);
     setAnswers((currentAnswers) => [...currentAnswers, skippedAnswer]);
     setFeedback({
-      correctAnswerLabel: stringifyQuizAnswer(getCanonicalCorrectAnswer(currentQuestion)),
+      correctAnswerLabel: formatQuizAnswerForQuestion(
+        currentQuestion,
+        getCanonicalCorrectAnswer(currentQuestion),
+      ),
       earnedCoins: skippedAnswer.earnedCoins,
       earnedPoints: 0,
       isCorrect: false,
@@ -199,13 +203,19 @@ export function QuizPlaySession({
     setAnswers((currentAnswers) => [...currentAnswers, completedAnswer]);
     setCoinBalance((currentCoins) => currentCoins + rewards.earnedCoins);
     setFeedback({
-      correctAnswerLabel: stringifyQuizAnswer(getCanonicalCorrectAnswer(currentQuestion)),
+      correctAnswerLabel: formatQuizAnswerForQuestion(
+        currentQuestion,
+        getCanonicalCorrectAnswer(currentQuestion),
+      ),
       earnedCoins,
       earnedPoints: rewards.earnedPoints,
       isCorrect,
       mode: isCorrect ? "correct" : "incorrect",
       question: currentQuestion,
-      selectedAnswerLabel: stringifyQuizAnswer(selectedAnswer),
+      selectedAnswerLabel: formatQuizAnswerForQuestion(
+        currentQuestion,
+        selectedAnswer,
+      ),
     });
   }
 

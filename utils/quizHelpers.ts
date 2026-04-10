@@ -224,19 +224,119 @@ export function buildQuizReviewItems(
       }
 
       return {
-        correctAnswerLabel: stringifyQuizAnswer(
+        correctAnswerLabel: formatQuizAnswerForQuestion(
+          question,
           getCanonicalCorrectAnswer(question),
         ),
         explanation: question.explanation,
         isCorrect: completedQuestion.isCorrect,
         questionId: question.id,
         questionText: question.question,
-        selectedAnswerLabel: stringifyQuizAnswer(completedQuestion.userAnswer),
+        selectedAnswerLabel: formatQuizAnswerForQuestion(
+          question,
+          completedQuestion.userAnswer,
+        ),
         type: question.type,
       };
     });
 
   return items.filter((item): item is QuizReviewItem => item !== null);
+}
+
+function getQuizOptionLetter(index: number) {
+  return String.fromCharCode(65 + index);
+}
+
+function getOpenEndedExpectedAnswer(question: QuizQuestion) {
+  const expectedTopics = question.keywords?.length
+    ? `Resposta esperada: mencionar ${question.keywords.join(", ")}`
+    : "Resposta esperada: analise tecnica coerente com o enunciado";
+  const minLengthLabel = question.minLength
+    ? ` com pelo menos ${question.minLength} caracteres`
+    : "";
+
+  return `${expectedTopics}${minLengthLabel}.`;
+}
+
+export function formatQuizAnswerForQuestion(
+  question: QuizQuestion,
+  answer: QuizAnswerValue,
+) {
+  if (answer === null) {
+    return "Sem resposta";
+  }
+
+  if (
+    question.type === "multiple-choice" ||
+    question.type === "image-identification"
+  ) {
+    if (typeof answer === "number" && question.options?.[answer]) {
+      return `${getQuizOptionLetter(answer)}) ${question.options[answer]}`;
+    }
+
+    return stringifyQuizAnswer(answer);
+  }
+
+  if (question.type === "true-false") {
+    return typeof answer === "boolean"
+      ? answer
+        ? "Verdadeiro"
+        : "Falso"
+      : stringifyQuizAnswer(answer);
+  }
+
+  if (question.type === "matching" && question.pairs) {
+    const mappedPairs =
+      Array.isArray(answer) && answer.length > 0 && Array.isArray(answer[0])
+        ? (answer as Array<[number, number]>)
+        : Array.isArray(answer)
+          ? (answer as number[]).map(
+              (rightIndex, leftIndex) => [leftIndex, rightIndex] as [number, number],
+            )
+          : [];
+
+    if (mappedPairs.length === 0) {
+      return "Sem associacoes";
+    }
+
+    return mappedPairs
+      .map(([leftIndex, rightIndex]) => {
+        const leftLabel =
+          question.pairs?.[leftIndex]?.left ?? `Item ${leftIndex + 1}`;
+        const rightLabel =
+          question.pairs?.[rightIndex]?.right ?? `Opcao ${rightIndex + 1}`;
+
+        return `${leftLabel} → ${rightLabel}`;
+      })
+      .join(" • ");
+  }
+
+  if (question.type === "ordering" && question.items) {
+    if (!Array.isArray(answer)) {
+      return stringifyQuizAnswer(answer);
+    }
+
+    return answer
+      .map((itemIndex, index) => {
+        const itemLabel =
+          typeof itemIndex === "number"
+            ? question.items?.[itemIndex] ?? `Item ${itemIndex + 1}`
+            : String(itemIndex);
+
+        return `${index + 1}. ${itemLabel}`;
+      })
+      .join(" • ");
+  }
+
+  if (question.type === "open-ended") {
+    if (typeof answer === "string" && answer.trim().length > 0) {
+      return answer.trim();
+    }
+
+    return getOpenEndedExpectedAnswer(question);
+  }
+
+  return stringifyQuizAnswer(answer);
 }
 
 export function stringifyQuizAnswer(answer: QuizCompletedQuestion["userAnswer"]) {
