@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       profiles: {
         Row: {
+          coins: number
           created_at: string
           email: string
           full_name: string
@@ -26,6 +27,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          coins?: number
           created_at?: string
           email: string
           full_name: string
@@ -36,6 +38,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          coins?: number
           created_at?: string
           email?: string
           full_name?: string
@@ -47,12 +50,114 @@ export type Database = {
         }
         Relationships: []
       }
+      quiz_attempts: {
+        Row: {
+          accuracy: number
+          answers: Json
+          completed_at: string
+          correct_count: number
+          created_at: string
+          hints_used: number
+          id: string
+          incorrect_count: number
+          level: string
+          skipped_count: number
+          started_at: string
+          status: string
+          summary: Json
+          total_coins: number
+          total_score: number
+          total_time_seconds: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          accuracy?: number
+          answers?: Json
+          completed_at?: string
+          correct_count?: number
+          created_at?: string
+          hints_used?: number
+          id?: string
+          incorrect_count?: number
+          level: string
+          skipped_count?: number
+          started_at?: string
+          status?: string
+          summary?: Json
+          total_coins?: number
+          total_score?: number
+          total_time_seconds?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          accuracy?: number
+          answers?: Json
+          completed_at?: string
+          correct_count?: number
+          created_at?: string
+          hints_used?: number
+          id?: string
+          incorrect_count?: number
+          level?: string
+          skipped_count?: number
+          started_at?: string
+          status?: string
+          summary?: Json
+          total_coins?: number
+          total_score?: number
+          total_time_seconds?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      quiz_progress: {
+        Row: {
+          achievements: Json
+          completed_quiz_count: number
+          created_at: string
+          last_synced_at: string | null
+          level_progress: Json
+          total_coins: number
+          total_points: number
+          unlocked_levels: string[]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          achievements?: Json
+          completed_quiz_count?: number
+          created_at?: string
+          last_synced_at?: string | null
+          level_progress?: Json
+          total_coins?: number
+          total_points?: number
+          unlocked_levels?: string[]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          achievements?: Json
+          completed_quiz_count?: number
+          created_at?: string
+          last_synced_at?: string | null
+          level_progress?: Json
+          total_coins?: number
+          total_points?: number
+          unlocked_levels?: string[]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      default_quiz_level_progress: { Args: never; Returns: Json }
     }
     Enums: {
       [_ in never]: never

@@ -1,11 +1,11 @@
 import { notFound, redirect } from "next/navigation";
-import { QuizQuestion } from "@/components/game/quiz/QuizQuestion";
+import { QuizPlaySession } from "@/components/game/quiz/QuizPlaySession";
+import type { Tables } from "@/lib/database.types";
+import { getQuizProgressSnapshotForUser } from "@/lib/quiz/server";
 import { createClient } from "@/lib/supabase/server";
-import {
-  buildDefaultQuizProgress,
-  getQuizLevelFromSlug,
-  getQuizLevelQuestions,
-} from "@/utils/quizHelpers";
+import { getQuizLevelFromSlug, isQuizLevelUnlocked } from "@/utils/quizHelpers";
+
+type Profile = Pick<Tables<"profiles">, "coins">;
 
 type QuizQuestionPageProps = {
   params: Promise<{
@@ -32,24 +32,26 @@ export default async function QuizQuestionPage({
     redirect("/");
   }
 
-  const progress = buildDefaultQuizProgress(user.id);
-  const questions = getQuizLevelQuestions(level);
-  const firstQuestion = questions[0];
+  const progress = await getQuizProgressSnapshotForUser(supabase, user.id);
 
-  if (!firstQuestion) {
-    notFound();
+  if (!isQuizLevelUnlocked(progress, level)) {
+    redirect("/jogar/quiz-guiado");
   }
 
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("coins")
+    .eq("id", user.id)
+    .maybeSingle<Profile>();
+
   return (
-    <main className="min-h-[100dvh] bg-[radial-gradient(circle_at_top,rgba(103,141,255,0.24),transparent_22%),linear-gradient(180deg,#1e2f83_0%,#223da9_54%,#202a87_100%)] px-4 py-4">
-      <div className="mx-auto w-full max-w-[32rem]">
-        <QuizQuestion
-          coinBalance={progress.levelProgress[level].totalCoins}
-          index={0}
-          question={firstQuestion}
-          total={questions.length}
-        />
-      </div>
+    <main className="min-h-[100dvh] bg-[radial-gradient(circle_at_top,rgba(103,141,255,0.24),transparent_22%),linear-gradient(180deg,#1e2f83_0%,#223da9_54%,#202a87_100%)] text-white">
+      <QuizPlaySession
+        initialCoins={profile?.coins ?? 0}
+        initialProgress={progress}
+        level={level}
+        userId={user.id}
+      />
     </main>
   );
 }

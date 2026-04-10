@@ -17,12 +17,30 @@ Atualizado em `10 de abril de 2026`.
 - Menu inferior com cinco abas
 - Aba `Jogar` pronta com dois modos visuais
 - Abas `Extras`, `Loja`, `Ranking` e `Conta` propositalmente vazias
-- Fundacao inicial do `Quiz guiado` integrada ao App Router
-- Selecao de nivel com `Iniciante`, `Intermediario` e `Avancado`
-- Overview por nivel com requisitos, recompensas e progresso
-- Primeira rota de questao seed para iniciar o fluxo tecnico
-- Hook local de progresso do quiz preparado para futura sincronizacao
-- Banco inicial seed com questoes tipadas e helpers de progressao
+- Sistema completo do `Quiz guiado` integrado ao App Router
+- Selecao de nivel com desbloqueio progressivo
+- Overview por nivel com requisitos, progresso, revisao e estatisticas
+- Sessao real de quiz com:
+  - respostas
+  - feedback imediato
+  - dicas com custo
+  - pulo de questoes
+  - pontuacao
+  - moedas
+- Telas de resultado final, revisao de respostas e estatisticas gerais
+- Persistencia local do quiz com sincronizacao para o `Supabase`
+- Banco completo com `90` questoes:
+  - `30` iniciante
+  - `30` intermediario
+  - `30` avancado
+- Suporte aos tipos:
+  - multipla escolha
+  - identificacao visual
+  - verdadeiro/falso
+  - associacao
+  - ordenacao
+  - discursiva
+- Sistema de conquistas e progresso por nivel
 
 ## Fluxo atual do usuario
 
@@ -30,7 +48,9 @@ Atualizado em `10 de abril de 2026`.
 2. No cadastro, o app salva os dados basicos da conta.
 3. Depois do login, o usuario cai no shell principal do app.
 4. A home autenticada abre na aba `Jogar`.
-5. O app ja mostra progresso e pontuacao vindos do perfil.
+5. Ao entrar em `Quiz guiado`, o usuario escolhe o nivel.
+6. O app executa a rodada completa, salva o resultado e sincroniza com o banco.
+7. O participante pode revisar respostas, consultar estatisticas e acumular pontos/moedas.
 
 ## Arquivos principais
 
@@ -51,42 +71,47 @@ Atualizado em `10 de abril de 2026`.
 - `app/jogar/quiz-guiado/page.tsx`
 - `app/jogar/quiz-guiado/[level]/page.tsx`
 - `app/jogar/quiz-guiado/[level]/questao/page.tsx`
+- `app/jogar/quiz-guiado/[level]/resultado/page.tsx`
+- `app/jogar/quiz-guiado/[level]/revisao/page.tsx`
+- `app/jogar/quiz-guiado/estatisticas/page.tsx`
 - `components/game/quiz/*`
 - `data/questions.ts`
 - `hooks/useQuizProgress.ts`
 - `utils/quizHelpers.ts`
+- `lib/quiz/client.ts`
+- `lib/quiz/server.ts`
+- `supabase/migrations/20260410094000_create_quiz_progress_tables.sql`
 
 ## Banco de dados atual
 
 - Projeto: `patojogo`
 - Ref: `dvtbmjjfyjspbigyemjr`
 - Tabela principal de app: `profiles`
+- Tabelas do quiz:
+  - `quiz_progress`
+  - `quiz_attempts`
 - Campos usados no fluxo atual:
   - `full_name`
   - `phone`
   - `email`
   - `progress_step`
   - `score`
+  - `coins`
 
 ## O que ainda nao foi construido
 
-- Fluxo completo de resposta do quiz
 - Tela real de desafio
 - Loja
 - Ranking funcional
 - Conta com edicao de perfil
-- Regras reais de pontuacao
-- Persistencia do quiz no Supabase
 
 ## Proximo passo recomendado
 
-Construir a primeira questao funcional do `Quiz guiado`:
+Construir o modo `Desafio relampago` e depois ligar o ranking final da palestra:
 
-- selecionar nivel
-- entrar no overview
-- responder questao
-- validar resposta
-- mostrar feedback
+- placar global
+- posicao do participante
+- premiacao final
 
 ## Git
 
@@ -94,6 +119,6 @@ Branches de referencia:
 
 - `main`: base estavel
 - `develop`: base de trabalho
-- `feature/auth-onboarding`: branch que concentrou as entregas de hoje
+- `feature/quiz-guiado-page`: branch atual do quiz guiado
 
 Se alguem novo entrar no projeto agora, pode puxar a `main` para ter tudo que foi feito ate aqui.

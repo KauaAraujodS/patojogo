@@ -4,7 +4,7 @@ Base do projeto em `Next.js 16 + TypeScript + Supabase`.
 
 ## Estado atual
 
-Em `9 de abril de 2026`, o projeto ja tem:
+Em `10 de abril de 2026`, o projeto ja tem:
 
 - autenticacao com `Supabase Auth`
 - captura de `nome`, `telefone`, `email` e `senha`
@@ -13,6 +13,17 @@ Em `9 de abril de 2026`, o projeto ja tem:
 - tela autenticada em formato de app
 - menu inferior com a aba `Jogar` pronta
 - abas `Extras`, `Loja`, `Ranking` e `Conta` deixadas vazias para construir do zero
+- quiz guiado completo com:
+  - selecao de nivel
+  - overview
+  - rodada jogavel
+  - feedback imediato
+  - resultado final
+  - revisao
+  - estatisticas
+- banco com `90` questoes (`30` por nivel)
+- persistencia local + sincronizacao do quiz no `Supabase`
+- tabelas `quiz_progress` e `quiz_attempts`
 
 Resumo detalhado do handoff:
 
@@ -87,6 +98,8 @@ Arquivos versionados:
 
 - `supabase/config.toml`
 - `supabase/.gitignore`
+- `supabase/migrations/20260409181525_create_profiles_and_progress.sql`
+- `supabase/migrations/20260410094000_create_quiz_progress_tables.sql`
 
 Arquivos sensiveis ficam fora do Git em `supabase/.temp`.
 

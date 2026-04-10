@@ -7,6 +7,7 @@ import { SignOutButton } from "@/components/auth/sign-out-button";
 import { cn } from "@/lib/cn";
 
 type Profile = {
+  coins: number | null;
   email: string | null;
   full_name: string | null;
   phone: string | null;
@@ -98,6 +99,9 @@ export function GameShell({ profile }: GameShellProps) {
           </div>
 
           <div className="ml-auto flex shrink-0 items-center gap-2">
+            <div className="rounded-full border border-white/12 bg-white/8 px-3 py-1.5 text-[0.74rem] font-semibold text-[#ffd778] sm:text-xs">
+              {profile.coins ?? 0} moedas
+            </div>
             <div className="rounded-full border border-white/12 bg-white/8 px-3 py-1.5 text-[0.74rem] font-semibold text-[#ffe18a] sm:text-xs">
               {profile.score ?? 0} pts
             </div>

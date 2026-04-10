@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 
 type Profile = Pick<
   Tables<"profiles">,
-  "email" | "full_name" | "phone" | "progress_step" | "score"
+  "coins" | "email" | "full_name" | "phone" | "progress_step" | "score"
 >;
 
 export default async function Home() {
@@ -19,7 +19,7 @@ export default async function Home() {
   if (user) {
     const { data } = await supabase
       .from("profiles")
-      .select("email, full_name, phone, progress_step, score")
+      .select("coins, email, full_name, phone, progress_step, score")
       .eq("id", user.id)
       .maybeSingle();
 

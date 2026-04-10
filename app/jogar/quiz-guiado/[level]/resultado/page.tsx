@@ -1,17 +1,26 @@
 import { notFound, redirect } from "next/navigation";
-import { QuizOverview } from "@/components/game/quiz/QuizOverview";
-import { getQuizLatestAttemptForUser, getQuizProgressSnapshotForUser } from "@/lib/quiz/server";
+import { QuizResultsClient } from "@/components/game/quiz/QuizResultsClient";
+import { getQuizAttemptById, getQuizLatestAttemptForUser, getQuizProgressSnapshotForUser } from "@/lib/quiz/server";
 import { createClient } from "@/lib/supabase/server";
 import { getQuizLevelFromSlug, isQuizLevelUnlocked } from "@/utils/quizHelpers";
 
-type LevelPageProps = {
+type QuizResultPageProps = {
   params: Promise<{
     level: string;
   }>;
+  searchParams: Promise<{
+    attempt?: string;
+  }>;
 };
 
-export default async function QuizLevelPage({ params }: LevelPageProps) {
-  const { level: levelSlug } = await params;
+export default async function QuizResultPage({
+  params,
+  searchParams,
+}: QuizResultPageProps) {
+  const [{ level: levelSlug }, { attempt: attemptId }] = await Promise.all([
+    params,
+    searchParams,
+  ]);
   const level = getQuizLevelFromSlug(levelSlug);
 
   if (!level) {
@@ -33,14 +42,18 @@ export default async function QuizLevelPage({ params }: LevelPageProps) {
     redirect("/jogar/quiz-guiado");
   }
 
-  const latestAttempt = await getQuizLatestAttemptForUser(supabase, user.id, level);
+  const attempt = attemptId
+    ? await getQuizAttemptById(supabase, user.id, attemptId)
+    : await getQuizLatestAttemptForUser(supabase, user.id, level);
 
   return (
     <main className="min-h-[100dvh] bg-[radial-gradient(circle_at_top,rgba(103,141,255,0.24),transparent_22%),linear-gradient(180deg,#1e2f83_0%,#223da9_54%,#202a87_100%)] text-white">
-      <QuizOverview
-        initialAttempt={latestAttempt}
+      <QuizResultsClient
+        attemptId={attemptId}
+        initialAttempt={attempt}
         initialProgress={progress}
         level={level}
+        userId={user.id}
       />
     </main>
   );

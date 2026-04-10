@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  type QuizLevel,
-  type QuizProgressSnapshot,
+import type {
+  QuizLevel,
+  QuizProgressSnapshot,
 } from "@/data/questions";
-  import {
+import { flushQueuedQuizSync } from "@/lib/quiz/client";
+import {
   buildDefaultQuizProgress,
   getQuizStars,
   isQuizLevelUnlocked,
@@ -15,6 +16,30 @@ const STORAGE_PREFIX = "patojogo.quiz.progress";
 
 function getStorageKey(userId: string) {
   return `${STORAGE_PREFIX}.${userId}`;
+}
+
+function getProgressWeight(progress: QuizProgressSnapshot) {
+  return Object.values(progress.levelProgress).reduce(
+    (accumulator, levelProgress) =>
+      accumulator +
+      levelProgress.totalScore +
+      levelProgress.completedCount * 10 +
+      levelProgress.totalCoins,
+    0,
+  );
+}
+
+function getPreferredProgress(
+  initialProgress: QuizProgressSnapshot,
+  storedProgress: QuizProgressSnapshot | null,
+) {
+  if (!storedProgress) {
+    return initialProgress;
+  }
+
+  return getProgressWeight(storedProgress) >= getProgressWeight(initialProgress)
+    ? storedProgress
+    : initialProgress;
 }
 
 export function useQuizProgress(initialProgress: QuizProgressSnapshot) {
@@ -32,21 +57,36 @@ export function useQuizProgress(initialProgress: QuizProgressSnapshot) {
     }
 
     try {
-      return JSON.parse(rawValue) as QuizProgressSnapshot;
+      const parsed = JSON.parse(rawValue) as QuizProgressSnapshot;
+
+      return getPreferredProgress(initialProgress, parsed);
     } catch {
       return initialProgress;
     }
   });
+
   useEffect(() => {
     const storageKey = getStorageKey(initialProgress.userId);
     const rawValue = window.localStorage.getItem(storageKey);
+    let nextProgress = initialProgress;
 
-    if (!rawValue) {
-      window.localStorage.setItem(storageKey, JSON.stringify(initialProgress));
+    if (rawValue) {
+      try {
+        nextProgress = getPreferredProgress(
+          initialProgress,
+          JSON.parse(rawValue) as QuizProgressSnapshot,
+        );
+      } catch {
+        nextProgress = initialProgress;
+      }
     }
+
+    window.localStorage.setItem(storageKey, JSON.stringify(nextProgress));
+
+    void flushQueuedQuizSync();
   }, [initialProgress]);
 
-  function persist(nextProgress: QuizProgressSnapshot) {
+  function persistProgress(nextProgress: QuizProgressSnapshot) {
     setProgress(nextProgress);
     window.localStorage.setItem(
       getStorageKey(nextProgress.userId),
@@ -86,15 +126,16 @@ export function useQuizProgress(initialProgress: QuizProgressSnapshot) {
       nextProgress.unlockedLevels.push("advanced");
     }
 
-    persist(nextProgress);
+    persistProgress(nextProgress);
   }
 
   function resetQuizProgress() {
-    persist(buildDefaultQuizProgress(progress.userId));
+    persistProgress(buildDefaultQuizProgress(progress.userId));
   }
 
   return {
     getStars: getQuizStars,
+    persistProgress,
     progress,
     resetQuizProgress,
     saveLevelProgress,
