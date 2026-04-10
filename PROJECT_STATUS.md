@@ -1,6 +1,6 @@
 # Status do projeto
 
-Atualizado em `9 de abril de 2026`.
+Atualizado em `10 de abril de 2026`.
 
 ## O que foi entregue
 
@@ -17,6 +17,12 @@ Atualizado em `9 de abril de 2026`.
 - Menu inferior com cinco abas
 - Aba `Jogar` pronta com dois modos visuais
 - Abas `Extras`, `Loja`, `Ranking` e `Conta` propositalmente vazias
+- Fundacao inicial do `Quiz guiado` integrada ao App Router
+- Selecao de nivel com `Iniciante`, `Intermediario` e `Avancado`
+- Overview por nivel com requisitos, recompensas e progresso
+- Primeira rota de questao seed para iniciar o fluxo tecnico
+- Hook local de progresso do quiz preparado para futura sincronizacao
+- Banco inicial seed com questoes tipadas e helpers de progressao
 
 ## Fluxo atual do usuario
 
@@ -42,6 +48,13 @@ Atualizado em `9 de abril de 2026`.
 - `lib/database.types.ts`
 - `supabase/migrations/20260409181525_create_profiles_and_progress.sql`
 - `scripts/export-participants.mjs`
+- `app/jogar/quiz-guiado/page.tsx`
+- `app/jogar/quiz-guiado/[level]/page.tsx`
+- `app/jogar/quiz-guiado/[level]/questao/page.tsx`
+- `components/game/quiz/*`
+- `data/questions.ts`
+- `hooks/useQuizProgress.ts`
+- `utils/quizHelpers.ts`
 
 ## Banco de dados atual
 
@@ -57,20 +70,23 @@ Atualizado em `9 de abril de 2026`.
 
 ## O que ainda nao foi construido
 
-- Tela real de quiz
+- Fluxo completo de resposta do quiz
 - Tela real de desafio
 - Loja
 - Ranking funcional
 - Conta com edicao de perfil
 - Regras reais de pontuacao
-- Navegacao por rotas internas do app
+- Persistencia do quiz no Supabase
 
 ## Proximo passo recomendado
 
-Construir a primeira experiencia real da aba `Jogar`:
+Construir a primeira questao funcional do `Quiz guiado`:
 
-- ou `Quiz guiado`
-- ou `Desafio relampago`
+- selecionar nivel
+- entrar no overview
+- responder questao
+- validar resposta
+- mostrar feedback
 
 ## Git
 
